@@ -85,7 +85,7 @@ namespace MonteKarlo {
         optimizer.step();
 //        std::cout<<loss.item()<<std::endl;
         // Output the loss and checkpoint every 100 batches.
-        torch::save(net, "D:\\Project\\C++\\CLion\\Alpha_tensor2\\net.pt");
+        torch::save(net, "D:\\Project\\C++\\CLion\\Alpha_tensor2\\model\\net.pt");
     }
     void back(Derevo* derevo,char hod, std::shared_ptr<Net> net, torch::optim::Adam& optimizer, torch::Device& device){
         double kef=0;

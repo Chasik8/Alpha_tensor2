@@ -1,2 +1,4 @@
 libtorch
 cmake-build-debug
+.idea
+model
