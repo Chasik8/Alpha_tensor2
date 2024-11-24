@@ -160,15 +160,13 @@ namespace MonteKarlo {
                 outFile << derevo->get_n() << " " << derevo->get_w() << ' ' << derevo->get_flag() << ' '
                         << derevo->get_value() << ' '
                         << derevo->get_depth() << ' ';
-//                for (unsigned long long int i = 0; i < SN; ++i) {
-//                    outFile << derevo->get_u()[i] << ' ';
-//                }
-//                for (unsigned long long int i = 0; i < SN; ++i) {
-//                    outFile << derevo->get_v()[i] << ' ';
-//                }
-//                for (unsigned long long int i = 0; i < SN; ++i) {
-//                    outFile << derevo->get_q()[i] << ' ';
-//                }
+                for (unsigned long long int i = 0; i < SN; ++i) {
+                    for (unsigned long long int j = 0;j < SN; ++j) {
+                        for (unsigned long long int k = 0; k < SN; ++k) {
+                            outFile << derevo->get_pole().get_value()[i][j][k] << ' ';
+                        }
+                    }
+                }
                 outFile << derevo->get_sled_size() << ' ';
                 for (auto i: derevo->get_sled()) {
                     st.push(i);
