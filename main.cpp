@@ -143,7 +143,7 @@ namespace MonteKarlo {
         }
 
         unsigned long long int save(Derevo *kor) {
-            const std::string &filename = "data1.1.mk";
+            const std::string &filename = "data2.1.mk";
             std::ofstream outFile(filename, std::ios::out);
             if (!outFile) {
                 std::cerr << "Ошибка открытия файла для записи!" << std::endl;
