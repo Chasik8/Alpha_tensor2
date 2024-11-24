@@ -158,15 +158,15 @@ namespace MonteKarlo {
                 outFile << derevo->get_n() << " " << derevo->get_w() << ' ' << derevo->get_flag() << ' '
                         << derevo->get_value() << ' '
                         << derevo->get_depth() << ' ';
-                for (unsigned long long int i = 0; i < SN; ++i) {
-                    outFile << derevo->get_u()[i] << ' ';
-                }
-                for (unsigned long long int i = 0; i < SN; ++i) {
-                    outFile << derevo->get_v()[i] << ' ';
-                }
-                for (unsigned long long int i = 0; i < SN; ++i) {
-                    outFile << derevo->get_q()[i] << ' ';
-                }
+//                for (unsigned long long int i = 0; i < SN; ++i) {
+//                    outFile << derevo->get_u()[i] << ' ';
+//                }
+//                for (unsigned long long int i = 0; i < SN; ++i) {
+//                    outFile << derevo->get_v()[i] << ' ';
+//                }
+//                for (unsigned long long int i = 0; i < SN; ++i) {
+//                    outFile << derevo->get_q()[i] << ' ';
+//                }
                 outFile << derevo->get_sled_size() << ' ';
                 for (auto i: derevo->get_setrd()) {
                     outFile << i << ' ';
@@ -190,7 +190,7 @@ namespace MonteKarlo {
             }
 
             Derevo *kor = new Derevo(true, nullptr);
-            unsigned long long int epoch_kol = 1e2;
+            unsigned long long int epoch_kol = 1e1;
             for (unsigned long long int epoch = 0; epoch < epoch_kol; ++epoch) {
                 std::cout << epoch << std::endl;
                 algorithm(kor);

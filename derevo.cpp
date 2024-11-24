@@ -3,9 +3,7 @@ namespace MonteKarlo {
     VMul3 ZERO=VMul3();
     VMul3 POLE=VMul3("init");
     Derevo::Derevo(std::vector<vmtype> &uu, std::vector<vmtype> &vv, std::vector<vmtype> &qq, bool fflag, Derevo *ppred, unsigned long long int gen_key) {
-        u = uu;
-        v = vv;
-        q = qq;
+        pl = ppred->get_pole() - VMul3(uu, vv, qq);
         flag = fflag;
         pred = ppred;
         if (ppred != nullptr) {
@@ -19,9 +17,7 @@ namespace MonteKarlo {
     }
 
     Derevo::Derevo(bool fflag, Derevo *ppred) {
-        u = std::vector<vmtype>(SN, 0);
-        v = std::vector<vmtype>(SN, 0);
-        q = std::vector<vmtype>(SN, 0);
+        pl=VMul3("init");
         flag = fflag;
         pred = ppred;
         if (ppred != nullptr) {
@@ -63,17 +59,7 @@ namespace MonteKarlo {
     }
 
     VMul3 Derevo::get_pole() {
-        VMul3 pole = POLE;
-        VMul3 dop = pole - VMul3(u, v, q);
-        Derevo *it = pred;
-        while (it != nullptr) {
-            std::vector<vmtype> uu = it->get_u();
-            std::vector<vmtype> vv = it->get_v();
-            std::vector<vmtype> qq = it->get_q();
-            dop = dop - VMul3(uu, vv, qq);
-            it = it->pred;
-        }
-        return dop;
+        return pl;
     }
 
     bool Derevo::set_flag(bool a) {
@@ -104,13 +90,6 @@ namespace MonteKarlo {
         sled.insert(a);
     }
 
-    std::vector<vmtype> Derevo::get_u() {
-        return u;
-    }
-
-    std::vector<vmtype> Derevo::get_v() {
-        return v;
-    }
 
     bool Derevo::get_flag() {
         return flag;
@@ -120,9 +99,6 @@ namespace MonteKarlo {
         return w / n;
     }
 
-    std::vector<vmtype> Derevo::get_q() {
-        return q;
-    }
     double Derevo::fun(double T) const{
         return get_wn()+C*sqrt(log(T)/get_n());
     }

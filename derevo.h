@@ -12,9 +12,7 @@ namespace MonteKarlo {
     private:
         double n = 1;
         double w = 0;
-        std::vector<vmtype> u;
-        std::vector<vmtype> v;
-        std::vector<vmtype> q;
+        VMul3 pl;
         Derevo *pred;
         std::set<Derevo *> sled;
         std::set<unsigned long long int> setrd;
@@ -60,12 +58,6 @@ namespace MonteKarlo {
         std::set<Derevo *> get_sled() const;
 
         std::set<unsigned long long int> get_setrd() const;
-
-        std::vector<vmtype> get_u();
-
-        std::vector<vmtype> get_v();
-
-        std::vector<vmtype> get_q();
 
         VMul3 get_pole();
 
