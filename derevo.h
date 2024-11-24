@@ -16,8 +16,10 @@ namespace MonteKarlo {
         std::vector<vmtype> v;
         std::vector<vmtype> q;
         Derevo *pred;
-        std::set<Derevo *> sled;
-        std::set<unsigned long long int> setrd;
+        struct CompareById {
+            bool operator()(const Derevo* lhs, const Derevo* rhs) const;
+        };
+        std::set<Derevo *,CompareById> sled;
         bool flag;
         unsigned long long int value;
         unsigned long long int depth;
@@ -28,10 +30,6 @@ namespace MonteKarlo {
         Derevo(bool fflag, Derevo *ppred);
 
         Derevo *sled_back();
-
-        bool find_setrd(unsigned long long int a);
-
-        void set_setrd(unsigned long long int a);
 
         bool set_w(double a);
 
@@ -57,9 +55,7 @@ namespace MonteKarlo {
 
         unsigned long long int get_value() const;
 
-        std::set<Derevo *> get_sled() const;
-
-        std::set<unsigned long long int> get_setrd() const;
+        std::set<Derevo *, CompareById> get_sled() const;
 
         std::vector<vmtype> get_u();
 
@@ -74,6 +70,10 @@ namespace MonteKarlo {
         double fun(double T) const;
 
         std::vector<vmtype> out();
+
+        bool set_value(unsigned long long int a);
+
+        bool find_sled(Derevo* a);
     };
 }
 #endif //ALPA_TENSOR_DEREVO_H

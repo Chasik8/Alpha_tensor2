@@ -32,17 +32,11 @@ namespace MonteKarlo {
         value = VALUE;
         ++VALUE;
     }
-
+    bool Derevo::CompareById::operator()(const Derevo* lhs, const Derevo* rhs) const {
+        return lhs->value < rhs->value;
+    }
     Derevo *Derevo::sled_back() {
         return *(--sled.end());
-    }
-
-    bool Derevo::find_setrd(unsigned long long int a) {
-        return setrd.find(a) != setrd.end();
-    }
-
-    void Derevo::set_setrd(unsigned long long int a) {
-        setrd.insert(a);
     }
 
     bool Derevo::set_w(double a) {
@@ -55,11 +49,8 @@ namespace MonteKarlo {
     unsigned long long int Derevo::get_value() const {
         return value;
     }
-    std::set<Derevo *> Derevo::get_sled() const {
+    std::set<Derevo *,Derevo::CompareById> Derevo::get_sled() const {
         return sled;
-    }
-    std::set<unsigned long long int> Derevo::get_setrd() const {
-        return setrd;
     }
 
     VMul3 Derevo::get_pole() {
@@ -133,14 +124,18 @@ namespace MonteKarlo {
         return false;
     }
     std::vector<vmtype> Derevo::out(){
-//        if (sled.empty()){
-//            return std::vector<char>(0,0);
-//        }
         std::vector<vmtype> m(LIM_POINT,0);
         for (auto i: sled){
             m[i->generation_key]=i->get_wn();
         }
         return m;
+    }
+    bool Derevo::set_value(unsigned long long int a){
+        value=a;
+        return true;
+    }
+    bool Derevo::find_sled(Derevo* a){
+        return sled.find(a)!=sled.end();
     }
 }
 //

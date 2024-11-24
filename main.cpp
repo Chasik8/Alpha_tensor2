@@ -5,6 +5,7 @@ namespace MonteKarlo {
         std::shared_ptr<Net> net = std::make_shared<Net>();
         torch::Device device = torch::kCUDA;
         std::shared_ptr<torch::optim::Adam> optimizer;
+        Derevo* dval=new Derevo(false, nullptr);
     public:
         double fun_zero(double T) {
             return C * sqrt(log(T));
@@ -36,7 +37,6 @@ namespace MonteKarlo {
             std::vector<vmtype> u = product(l1);
             std::vector<vmtype> v = product(l2);
             std::vector<vmtype> q = product(l3);
-            derevo->set_setrd(dop);
             Derevo *dopd = new Derevo(u, v, q, flag, derevo, dop);
             derevo->set_sled(dopd);
             return std::pair<bool, Derevo *>(flag, dopd);
@@ -68,7 +68,8 @@ namespace MonteKarlo {
             bool flag = true;
             while (p == 0 && flag) {
                 unsigned long long int dop = win(derevo);
-                if (!derevo->find_setrd(dop)) {
+                dval->set_value(dop);
+                if (!derevo->find_sled(dval)) {
                     std::pair<bool, Derevo *> pr = nw(derevo, dop);
                     derevo = pr.second;
                     flag = pr.first;
@@ -126,7 +127,8 @@ namespace MonteKarlo {
                     derevo = derevo->sled_back();
                 } else if (derevo->get_flag()) {
                     unsigned long long int dop1 = rand() % LIM_POINT;
-                    while (derevo->find_setrd(dop1)) {
+                    dval->set_value(dop1);
+                    while (derevo->find_sled(dval)) {
                         dop1 = rand() % LIM_POINT;
                     }
                     derevo = nw(derevo, dop1).second;
@@ -141,7 +143,7 @@ namespace MonteKarlo {
         }
 
         unsigned long long int save(Derevo *kor) {
-            const std::string &filename = "data1.mk";
+            const std::string &filename = "data1.1.mk";
             std::ofstream outFile(filename, std::ios::out);
             if (!outFile) {
                 std::cerr << "Ошибка открытия файла для записи!" << std::endl;
@@ -168,9 +170,6 @@ namespace MonteKarlo {
                     outFile << derevo->get_q()[i] << ' ';
                 }
                 outFile << derevo->get_sled_size() << ' ';
-                for (auto i: derevo->get_setrd()) {
-                    outFile << i << ' ';
-                }
                 for (auto i: derevo->get_sled()) {
                     st.push(i);
                 }
@@ -190,7 +189,7 @@ namespace MonteKarlo {
             }
 
             Derevo *kor = new Derevo(true, nullptr);
-            unsigned long long int epoch_kol = 1e2;
+            unsigned long long int epoch_kol = 3;
             for (unsigned long long int epoch = 0; epoch < epoch_kol; ++epoch) {
                 std::cout << epoch << std::endl;
                 algorithm(kor);
