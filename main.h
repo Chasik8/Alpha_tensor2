@@ -4,11 +4,10 @@
 #include <cstdlib>
 #include <string>
 #include <ctime>
-#include <fstream>
 #include <stack>
 #include "derevo.h"
 #include <torch/torch.h>
-#include "model.cpp"
+#include <fstream>
 #ifndef ALPA_TENSOR_MAIN_H
 #define ALPA_TENSOR_MAIN_H
 namespace MonteKarlo {

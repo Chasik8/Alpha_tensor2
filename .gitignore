@@ -1,4 +1,8 @@
 libtorch
+libtorchr
+libtorchd
+libtorch-win-shared-with-deps-2.5.1+cu118.zip
 cmake-build-debug
+cmake-build-release
 .idea
 model

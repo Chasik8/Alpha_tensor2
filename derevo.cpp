@@ -113,6 +113,15 @@ namespace MonteKarlo {
     bool Derevo::find_sled(Derevo* a){
         return sled.find(a)!=sled.end();
     }
+
+    void Derevo::set_pl(unsigned long long int i, unsigned long long int j, unsigned long long int k, vmtype val) {
+        pl.set_v(i,j,k,val);
+    }
+
+    bool Derevo::set_depth(unsigned long long int a) {
+        depth=a;
+        return true;
+    }
 }
 //
 // Created by hasni on 07.10.2024.

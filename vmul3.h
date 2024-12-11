@@ -7,8 +7,8 @@
 #ifndef ALPA_TENSOR_VMUL3_H
 #define ALPA_TENSOR_VMUL3_H
 namespace MonteKarlo{
-    extern const double N;
-    extern const unsigned long long int SN;
+    extern double N;
+    extern unsigned long long int SN;
     extern long long int SN3;
     extern unsigned long long int MOD_N;
     extern long long int LIM_POINT;
@@ -36,6 +36,8 @@ namespace MonteKarlo{
         void print();
 
         std::vector<vmtype> VMul3::get_data();
+
+        void set_v(unsigned long long int i,unsigned long long int j,unsigned long long int k, vmtype val);
     };
 
 };

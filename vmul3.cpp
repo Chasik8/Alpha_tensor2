@@ -1,7 +1,7 @@
 #include "vmul3.h"
 namespace MonteKarlo {
-    double const N=2;
-    const unsigned long long int SN=N*N;
+    double N=2;
+    unsigned long long int SN=N*N;
     long long int SN3=SN*SN*SN;
     unsigned long long int MOD_N=pow(3.0,SN);
     long long int LIM_POINT=pow(3,SN*3);
@@ -92,6 +92,10 @@ namespace MonteKarlo {
             std::cout<<"-------------------"<<std::endl;
         }
         std::cout<<"////////////////////////"<<std::endl;
+    }
+
+    void VMul3::set_v(unsigned long long int i, unsigned long long int j, unsigned long long int k, vmtype val) {
+        v[i][j][k]=val;
     }
 }
 //

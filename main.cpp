@@ -1,4 +1,13 @@
 #include "main.h"
+#include "read.h"
+#include <fstream>
+#include <cstdlib>
+#include <string>
+#include <ctime>
+#include <stack>
+#include "derevo.h"
+#include "model.h"
+#include <torch/torch.h>
 namespace MonteKarlo {
     class Game {
     private:
@@ -142,38 +151,34 @@ namespace MonteKarlo {
             back(derevo, pr.second);
         }
 
-        unsigned long long int save(Derevo *kor) {
+        unsigned long long int save(Derevo *derevo, unsigned long long int epoch_kol) {
             const std::string &filename = "data2.1.mk";
             std::ofstream outFile(filename, std::ios::out);
             if (!outFile) {
                 std::cerr << "Ошибка открытия файла для записи!" << std::endl;
                 return -1;
             }
-            outFile << N << " " << SN << ' ' << MOD_N << ' ' << LIM_POINT << ' ' << LIM_HOD << ' ' << C << ' ' << VALUE
+            outFile<<epoch_kol<<" " << N << " " << SN << ' ' << MOD_N << ' ' << LIM_POINT << ' ' << LIM_HOD << ' ' << C << ' ' << VALUE
                     << ' ';
-            std::stack<Derevo *> st;
-            st.push(kor);
-            unsigned long long int kol = 0;
-            for (; !st.empty(); ++kol) {
-                Derevo *derevo = st.top();
-                st.pop();
-                outFile << derevo->get_n() << " " << derevo->get_w() << ' ' << derevo->get_flag() << ' '
-                        << derevo->get_value() << ' '
-                        << derevo->get_depth() << ' ';
-                for (unsigned long long int i = 0; i < SN; ++i) {
-                    for (unsigned long long int j = 0;j < SN; ++j) {
-                        for (unsigned long long int k = 0; k < SN; ++k) {
-                            outFile << derevo->get_pole().get_value()[i][j][k] << ' ';
-                        }
+            sv(derevo,outFile);
+            outFile.close();
+            return 0;
+        }
+        void sv(Derevo *derevo, std::ofstream& outFile){
+            outFile << derevo->get_n() << " " << derevo->get_w() << ' ' << derevo->get_flag() << ' '
+                    << derevo->get_value() << ' '
+                    << derevo->get_depth() << ' ';
+            for (unsigned long long int i = 0; i < SN; ++i) {
+                for (unsigned long long int j = 0;j < SN; ++j) {
+                    for (unsigned long long int k = 0; k < SN; ++k) {
+                        outFile << derevo->get_pole().get_value()[i][j][k] << ' ';
                     }
                 }
-                outFile << derevo->get_sled_size() << ' ';
-                for (auto i: derevo->get_sled()) {
-                    st.push(i);
-                }
             }
-            outFile.close();
-            return kol;
+            outFile << derevo->get_sled_size() << ' ';
+            for (auto i: derevo->get_sled()) {
+                sv(i,outFile);
+            }
         }
 
         Game() {
@@ -186,13 +191,15 @@ namespace MonteKarlo {
                 std::cout << "Training on CPU.\n";
             }
 
-            Derevo *kor = new Derevo(true, nullptr);
             unsigned long long int epoch_kol = 3;
-            for (unsigned long long int epoch = 0; epoch < epoch_kol; ++epoch) {
+            unsigned long long int epoch_pred =0;
+            //Derevo *kor = new Derevo(true, nullptr);
+            Derevo *kor=readmk(epoch_pred);
+            for (unsigned long long int epoch =epoch_pred;epoch<epoch_kol+epoch_pred;++epoch) {
                 std::cout << epoch << std::endl;
                 algorithm(kor);
             }
-            std::cout << save(kor) << std::endl;
+            std::cout << save(kor,epoch_kol+epoch_pred) << std::endl;
         }
     };
 }

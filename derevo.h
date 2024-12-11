@@ -27,6 +27,8 @@ namespace MonteKarlo {
 
         Derevo(bool fflag, Derevo *ppred);
 
+        void set_pl(unsigned long long int i,unsigned long long int j,unsigned long long int k, vmtype val);
+
         Derevo *sled_back();
 
         bool set_w(double a);
@@ -34,6 +36,8 @@ namespace MonteKarlo {
         bool set_n(double a);
 
         bool set_flag(bool a);
+
+        bool set_depth(unsigned long long int a);
 
         void set_sled(Derevo *a);
 

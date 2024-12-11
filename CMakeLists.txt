@@ -9,6 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(Torch_DIR "D:/Project/C++/CLion/Alpha_tensor2/libtorch/share/cmake/Torch")
 set(CMAKE_PREFIX_PATH "D:/Project/C++/CLion/Alpha_tensor2/libtorch")
 
+#set(CMAKE_EXE_LINKER_FLAGS "-static")
 # Find the Torch package
 find_package(Torch REQUIRED)
 
@@ -20,7 +21,7 @@ if (CMAKE_CUDA_COMPILER)
 endif()
 
 # Add the executable target
-add_executable(Alpha_tensor2 main.cpp main.h model.cpp vmul3.cpp vmul3.h derevo.cpp derevo.h )
+add_executable(Alpha_tensor2 main.cpp main.h vmul3.cpp vmul3.h derevo.cpp derevo.h tqdm.hpp read.cpp read.h)
 
 # Link Torch libraries
 target_link_libraries(Alpha_tensor2 "${TORCH_LIBRARIES}")
