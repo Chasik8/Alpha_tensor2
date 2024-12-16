@@ -5,7 +5,7 @@ namespace MonteKarlo {
     long long int SN3=SN*SN*SN;
     unsigned long long int MOD_N=pow(3.0,SN);
     long long int LIM_POINT=pow(3,SN*3);
-    unsigned long long int LIM_HOD=N*N*3;
+    unsigned long long int LIM_HOD=N*N*N*2;
     double C=sqrt(2);
     unsigned long long int VALUE=0;
     VMul3::VMul3() {
@@ -22,13 +22,18 @@ namespace MonteKarlo {
     }
 
     void VMul3::pole_init() {
-        for (unsigned long long int i = 0; i < N; ++i) {
-            for (unsigned long long int j = 0; j < N; ++j) {
-                for (unsigned long long int k = 0; k < N; ++k) {
-                    v[i * N + k][k * N + j][i * N + j] = 1;
+        if (floor(N)==N) {
+            for (unsigned long long int i = 0; i < N; ++i) {
+                for (unsigned long long int j = 0; j < N; ++j) {
+                    for (unsigned long long int k = 0; k < N; ++k) {
+                        v[i *N + k][k * N + j][i * N + j] = 1;
+                    }
                 }
             }
-
+        }else {
+            for (unsigned long long int i = 0; i < SN; ++i) {
+                v[i][i][i] =1;
+            }
         }
     }
 
@@ -48,6 +53,7 @@ namespace MonteKarlo {
 
     VMul3 VMul3::operator-(const VMul3 &b) {
         VMul3 ans = *this;
+        // моно переписать с boost transform
         for (unsigned long long int i = 0; i < v.size(); ++i) {
             for (unsigned long long int j = 0; j < v.size(); ++j) {
                 for (unsigned long long int k = 0; k < v.size(); ++k) {

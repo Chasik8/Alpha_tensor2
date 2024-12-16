@@ -38,7 +38,7 @@ namespace MonteKarlo {
     }
     Derevo* readmk(unsigned long long int& epoch_kol) {
         Derevo* kor= nullptr;
-        const std::string &filename = "data2.1.mk";
+        const std::string &filename = "data2.mk";
         std::ifstream inFile(filename, std::ios::in);
         inFile >>epoch_kol >> N >> SN >> MOD_N >> LIM_POINT >> LIM_HOD >> C >> VALUE;
         kor=read(kor, inFile);

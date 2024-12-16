@@ -102,7 +102,6 @@ namespace MonteKarlo {
             optimizer->step();
 //        std::cout<<loss.item()<<std::endl;
             // Output the loss and checkpoint every 100 batches.
-            torch::save(net, "D:\\Project\\C++\\CLion\\Alpha_tensor2\\model\\net.pt");
         }
 
         void back(Derevo *derevo, char hod) {
@@ -139,6 +138,7 @@ namespace MonteKarlo {
                     dval->set_value(dop1);
                     while (derevo->find_sled(dval)) {
                         dop1 = rand() % LIM_POINT;
+                        dval->set_value(dop1);
                     }
                     derevo = nw(derevo, dop1).second;
                 } else {
@@ -152,7 +152,8 @@ namespace MonteKarlo {
         }
 
         unsigned long long int save(Derevo *derevo, unsigned long long int epoch_kol) {
-            const std::string &filename = "data2.1.mk";
+            torch::save(net, "D:\\Project\\C++\\CLion\\Alpha_tensor2\\model\\net.pt");
+            const std::string &filename = "data2.mk";
             std::ofstream outFile(filename, std::ios::out);
             if (!outFile) {
                 std::cerr << "Ошибка открытия файла для записи!" << std::endl;
@@ -191,15 +192,23 @@ namespace MonteKarlo {
                 std::cout << "Training on CPU.\n";
             }
 
-            unsigned long long int epoch_kol = 3;
+            unsigned long long int epoch_kol = 400000;
             unsigned long long int epoch_pred =0;
-            //Derevo *kor = new Derevo(true, nullptr);
-            Derevo *kor=readmk(epoch_pred);
-            for (unsigned long long int epoch =epoch_pred;epoch<epoch_kol+epoch_pred;++epoch) {
-                std::cout << epoch << std::endl;
+            Derevo *kor = new Derevo(true, nullptr);
+            //Derevo *kor=readmk(epoch_pred);
+            //torch::load(net, "D:\\Project\\C++\\CLion\\Alpha_tensor2\\model\\net.pt");
+
+            for (unsigned long long int epoch = epoch_pred;epoch<epoch_kol+epoch_pred;++epoch) {
+                if (epoch%100==0) {
+                    std::cout << epoch << std::endl;
+                }
                 algorithm(kor);
+                if (epoch%10000==0) {
+                    save(kor,epoch+epoch_pred);
+                }
             }
             std::cout << save(kor,epoch_kol+epoch_pred) << std::endl;
+            std::cout << VALUE << std::endl;
         }
     };
 }
