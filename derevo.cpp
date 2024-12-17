@@ -15,7 +15,15 @@ namespace MonteKarlo {
         ++VALUE;
         generation_key=gen_key;
     }
-
+    Derevo::~Derevo() {
+        // Очистка множества sled, если оно содержит указатели
+        for (auto elem : sled) {
+            delete elem; // Рекурсивное удаление дочерних элементов
+        }
+        sled.clear();
+        // Очистка памяти для pred (если это необходимо)
+        pred = nullptr; // Указатель pred не владеет объектом, предполагаем nullptr
+    }
     Derevo::Derevo(bool fflag, Derevo *ppred) {
         pl=VMul3("init");
         flag = fflag;
@@ -28,9 +36,9 @@ namespace MonteKarlo {
         value = VALUE;
         ++VALUE;
     }
-    bool Derevo::CompareById::operator()(const Derevo* lhs, const Derevo* rhs) const {
-        return lhs->value < rhs->value;
-    }
+//    bool Derevo::CompareById::operator()(const Derevo* lhs, const Derevo* rhs) const {
+//        return lhs->value < rhs->value;
+//    }
     Derevo *Derevo::sled_back() {
         return *(--sled.end());
     }
@@ -45,7 +53,7 @@ namespace MonteKarlo {
     unsigned long long int Derevo::get_value() const {
         return value;
     }
-    std::set<Derevo *,Derevo::CompareById> Derevo::get_sled() const {
+    std::vector<Derevo *> Derevo::get_sled() const {
         return sled;
     }
 
@@ -78,7 +86,7 @@ namespace MonteKarlo {
     }
 
     void Derevo::set_sled(Derevo *a) {
-        sled.insert(a);
+        sled.push_back(a);
     }
 
 
@@ -90,11 +98,11 @@ namespace MonteKarlo {
         return w / n;
     }
 
-    double Derevo::fun(double T) const{
+    double Derevo::fun() const{
         return get_wn()+C*sqrt(log(T)/get_n());
     }
     bool Derevo::operator<(const Derevo* other) const{
-        if (fun((double)VALUE)>other->fun((double)VALUE)){
+        if (fun()>other->fun()){
             return true;
         }
         return false;
@@ -110,8 +118,28 @@ namespace MonteKarlo {
         value=a;
         return true;
     }
-    bool Derevo::find_sled(Derevo* a){
-        return sled.find(a)!=sled.end();
+    unsigned long long int Derevo::find_max_index(){
+
+        return tbb::parallel_reduce(
+             tbb::blocked_range<size_t>(0, sled.size()),
+             std::make_pair(sled[0]->fun(), 0),
+             [&](const tbb::blocked_range<size_t>& range, std::pair<double, unsigned long long int> local_max) {
+                 for (size_t i = range.begin(); i < range.end(); ++i) {
+                     double ans=sled[i]->fun();
+                     if (local_max.first<ans){
+                         local_max.first=ans;
+                         local_max.second=i;
+                     }
+                 }
+                 return local_max;
+             },
+             [](std::pair<double, unsigned long long int> x, std::pair<double, unsigned long long int> y) {
+                 if (x.first<y.first){
+                     return y;
+                 }
+                 return x;
+             }
+         ).second;
     }
 
     void Derevo::set_pl(unsigned long long int i, unsigned long long int j, unsigned long long int k, vmtype val) {
@@ -121,6 +149,10 @@ namespace MonteKarlo {
     bool Derevo::set_depth(unsigned long long int a) {
         depth=a;
         return true;
+    }
+
+    Derevo *Derevo::get_sled_elem(unsigned long long int index) {
+        return sled[index];
     }
 }
 //

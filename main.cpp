@@ -77,12 +77,12 @@ namespace MonteKarlo {
             bool flag = true;
             while (p == 0 && flag) {
                 unsigned long long int dop = win(derevo);
-                dval->set_value(dop);
-                if (!derevo->find_sled(dval)) {
+//                dval->set_value(dop);
+//                if (!derevo->find_sled(dval)) {
                     std::pair<bool, Derevo *> pr = nw(derevo, dop);
                     derevo = pr.second;
                     flag = pr.first;
-                }
+//                }
                 p = if_game(derevo);
             }
             return std::pair<Derevo *, char>(derevo, p);
@@ -130,24 +130,10 @@ namespace MonteKarlo {
         void algorithm(Derevo *kor) {
             Derevo *derevo = kor;
             while (derevo->get_sled_size() > 0) {
-                unsigned long long int dop = rand() % LIM_POINT;
-                if (derevo->get_sled_size() >= dop) {
-                    derevo = derevo->sled_back();
-                } else if (derevo->get_flag()) {
-                    unsigned long long int dop1 = rand() % LIM_POINT;
-                    dval->set_value(dop1);
-                    while (derevo->find_sled(dval)) {
-                        dop1 = rand() % LIM_POINT;
-                        dval->set_value(dop1);
-                    }
-                    derevo = nw(derevo, dop1).second;
-                } else {
-                    break;
-                }
+                derevo=derevo->get_sled_elem(derevo->find_max_index());
             }
             std::pair<Derevo *, char> pr = mod(derevo);
             derevo = pr.first;
-//        ++VALUE;
             back(derevo, pr.second);
         }
 
@@ -172,7 +158,7 @@ namespace MonteKarlo {
             for (unsigned long long int i = 0; i < SN; ++i) {
                 for (unsigned long long int j = 0;j < SN; ++j) {
                     for (unsigned long long int k = 0; k < SN; ++k) {
-                        outFile << derevo->get_pole().get_value()[i][j][k] << ' ';
+                        outFile << derevo->get_pole().get_value()[i*SN2+j*SN+k] << ' ';
                     }
                 }
             }
@@ -181,7 +167,12 @@ namespace MonteKarlo {
                 sv(i,outFile);
             }
         }
-
+        void clear(Derevo *kor){
+            for (auto i: kor->get_sled()){
+                clear(i);
+                delete i;
+            }
+        }
         Game() {
             optimizer = std::make_shared<torch::optim::Adam>(net->parameters(), torch::optim::AdamOptions(0.001));
             net->to(device);
@@ -192,13 +183,13 @@ namespace MonteKarlo {
                 std::cout << "Training on CPU.\n";
             }
 
-            unsigned long long int epoch_kol = 400000;
+            unsigned long long int epoch_kol = 100;
             unsigned long long int epoch_pred =0;
             Derevo *kor = new Derevo(true, nullptr);
             //Derevo *kor=readmk(epoch_pred);
             //torch::load(net, "D:\\Project\\C++\\CLion\\Alpha_tensor2\\model\\net.pt");
 
-            for (unsigned long long int epoch = epoch_pred;epoch<epoch_kol+epoch_pred;++epoch) {
+            for (unsigned long long int epoch = epoch_pred;epoch<epoch_kol+epoch_pred;++epoch,++T) {
                 if (epoch%100==0) {
                     std::cout << epoch << std::endl;
                 }
@@ -209,6 +200,7 @@ namespace MonteKarlo {
             }
             std::cout << save(kor,epoch_kol+epoch_pred) << std::endl;
             std::cout << VALUE << std::endl;
+            //clear(kor);
         }
     };
 }
