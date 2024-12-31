@@ -118,7 +118,7 @@ namespace MonteKarlo {
         value=a;
         return true;
     }
-    unsigned long long int Derevo::find_max_index(){
+    std::pair<double, unsigned long long int> Derevo::find_max_index(){
 
         return tbb::parallel_reduce(
              tbb::blocked_range<size_t>(0, sled.size()),
@@ -139,7 +139,7 @@ namespace MonteKarlo {
                  }
                  return x;
              }
-         ).second;
+         );
     }
 
     void Derevo::set_pl(unsigned long long int i, unsigned long long int j, unsigned long long int k, vmtype val) {
@@ -153,6 +153,38 @@ namespace MonteKarlo {
 
     Derevo *Derevo::get_sled_elem(unsigned long long int index) {
         return sled[index];
+    }
+
+    std::pair<bool, unsigned long long int> Derevo::find_new(unsigned long long int target) {
+        // Сортируем массив (можно использовать tbb::parallel_sort для ускорения)
+        tbb::parallel_sort(sled.begin(), sled.end(),
+                           [](const Derevo* a, const Derevo* b){ return a->value < b->value;});
+
+        return tbb::parallel_reduce(
+                tbb::blocked_range<size_t>(0, sled.size()),
+                std::pair<bool, unsigned long long int>(false,0), // Инициализация: элемент не найден, отсутствующее число 0
+                [&](const tbb::blocked_range<size_t>& range, std::pair<bool, unsigned long long int> result) -> std::pair<bool, unsigned long long int> {
+                    unsigned long long int expected = range.begin() > 0 ? sled[range.begin() - 1]->value + 1 : 0;
+
+                    for (size_t i = range.begin(); i < range.end(); ++i) {
+                        if (sled[i]->value == target) {
+                            result.first = true;
+                        }
+                        while (expected < sled[i]->value) {
+                            result.second = std::min(result.second, expected);
+                            ++expected;
+                        }
+                        expected = sled[i]->value + 1;
+                    }
+                    return result;
+                },
+                [](std::pair<bool, unsigned long long int> a, std::pair<bool, unsigned long long int> b) -> std::pair<bool, unsigned long long int> {
+                    return {
+                            a.first || b.first,                    // Логическое "ИЛИ" для поиска элемента
+                            std::min(a.second, b.second) // Минимум для отсутствующего числа
+                    };
+                }
+        );
     }
 }
 //

@@ -77,12 +77,16 @@ namespace MonteKarlo {
             bool flag = true;
             while (p == 0 && flag) {
                 unsigned long long int dop = win(derevo);
-//                dval->set_value(dop);
-//                if (!derevo->find_sled(dval)) {
-                    std::pair<bool, Derevo *> pr = nw(derevo, dop);
-                    derevo = pr.second;
-                    flag = pr.first;
-//                }
+                auto pr_dop= derevo->find_new(dop);
+                std::pair<bool, Derevo *> pr;
+                if (!pr_dop.first) {
+                    pr = nw(derevo, dop);
+                }else{
+                    pr = nw(derevo, pr_dop.second);
+                    std::cout<<"нейронка совпала"<<dop<<" "<<pr_dop.second<<" \n";
+                }
+                derevo = pr.second;
+                flag = pr.first;
                 p = if_game(derevo);
             }
             return std::pair<Derevo *, char>(derevo, p);
@@ -130,7 +134,12 @@ namespace MonteKarlo {
         void algorithm(Derevo *kor) {
             Derevo *derevo = kor;
             while (derevo->get_sled_size() > 0) {
-                derevo=derevo->get_sled_elem(derevo->find_max_index());
+                std::pair<double, unsigned long long int> dop_pr=derevo->find_max_index();
+                if (dop_pr.first>dval->fun()) {
+                    derevo = derevo->get_sled_elem(dop_pr.second);
+                }else{
+                    break;
+                }
             }
             std::pair<Derevo *, char> pr = mod(derevo);
             derevo = pr.first;
@@ -183,7 +192,9 @@ namespace MonteKarlo {
                 std::cout << "Training on CPU.\n";
             }
 
-            unsigned long long int epoch_kol = 100;
+            unsigned long long int epoch_kol = 3;
+            std::cout<<"Введите количество эпох: ";
+            std::cin>>epoch_kol;
             unsigned long long int epoch_pred =0;
             Derevo *kor = new Derevo(true, nullptr);
             //Derevo *kor=readmk(epoch_pred);

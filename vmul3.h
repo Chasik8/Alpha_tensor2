@@ -4,11 +4,12 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
-#include <tbb/parallel_for.h>
-#include <tbb/parallel_reduce.h>
-#include <tbb/blocked_range.h>
-#include <tbb/blocked_range2d.h>
-#include <tbb/global_control.h>
+#include <tbb/tbb.h>
+//#include <tbb/parallel_for.h>
+//#include <tbb/parallel_reduce.h>
+//#include <tbb/blocked_range.h>
+//#include <tbb/blocked_range2d.h>
+//#include <tbb/global_control.h>
 #include <optional>
 #ifndef ALPA_TENSOR_VMUL3_H
 #define ALPA_TENSOR_VMUL3_H

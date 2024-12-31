@@ -70,7 +70,9 @@ namespace MonteKarlo {
 
         bool set_value(unsigned long long int a);
 
-        unsigned long long int Derevo::find_max_index();
+        std::pair<double, unsigned long long int> Derevo::find_max_index();
+
+        std::pair<bool, unsigned long long int> Derevo::find_new(unsigned long long int target);
     };
 }
 #endif //ALPA_TENSOR_DEREVO_H
