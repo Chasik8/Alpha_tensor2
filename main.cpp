@@ -199,10 +199,13 @@ namespace MonteKarlo {
             Derevo *kor = new Derevo(true, nullptr);
             //Derevo *kor=readmk(epoch_pred);
             //torch::load(net, "D:\\Project\\C++\\CLion\\Alpha_tensor2\\model\\net.pt");
-
+            bool size_kor=true;
             for (unsigned long long int epoch = epoch_pred;epoch<epoch_kol+epoch_pred;++epoch,++T) {
                 if (epoch%100==0) {
                     std::cout << epoch << std::endl;
+                }
+                if (size_kor&&kor->get_sled_size()==LIM_POINT){
+                    std::cout<<"size_kor\n";
                 }
                 algorithm(kor);
                 if (epoch%10000==0) {
