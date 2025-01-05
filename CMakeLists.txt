@@ -26,7 +26,8 @@ set(CMAKE_PREFIX_PATH "D:/Project/C++/CLion/Alpha_tensor2/libtorch")
 find_package(Torch REQUIRED)
 
 # Add the executable target
-add_executable(${PROJECT_NAME} main.cpp main.h vmul3.cpp vmul3.h derevo.cpp derevo.h tqdm.hpp read.cpp read.h)
+add_executable(${PROJECT_NAME} main.cpp main.h vmul3.cpp vmul3.h derevo.cpp derevo.h tqdm.hpp read.cpp
+        save.cpp)
 
 # Подключение TBB
 target_include_directories(${PROJECT_NAME} PRIVATE ${TBB_INCLUDE_DIR})

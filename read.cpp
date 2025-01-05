@@ -1,9 +1,9 @@
 ////
 //// Created by hasni on 01.12.2024.
 ////
-#include "read.h"
+#include "main.h"
 namespace MonteKarlo {
-    Derevo* read(Derevo* kor,std::ifstream& inFile){
+    Derevo* Game::read(Derevo* kor,std::ifstream& inFile){
         double n,w;
         bool flag;
         unsigned long long int value;
@@ -36,10 +36,10 @@ namespace MonteKarlo {
         }
         return derevo ;
     }
-    Derevo* readmk(unsigned long long int& epoch_kol) {
+    Derevo* Game::readmk(unsigned long long int& epoch_kol) {
+        torch::load(net, path_netname.string());
         Derevo* kor= nullptr;
-        const std::string &filename = "data2.mk";
-        std::ifstream inFile(filename, std::ios::in);
+        std::ifstream inFile(path_dataname, std::ios::in);
         inFile >>epoch_kol >> N >> SN >> MOD_N >> LIM_POINT >> LIM_HOD >> C >> VALUE;
         kor=read(kor, inFile);
         inFile.close();
