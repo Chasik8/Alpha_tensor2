@@ -143,6 +143,7 @@ namespace MonteKarlo {
         if (derevo->get_depth() < LIM_HOD) {
             if (derevo->get_pole() == ZERO) {
                 derevo->set_flag(false);
+                std::cout<<"ZERO "<<derevo->get_depth()<<std::endl;
                 return 1;
             } else {
                 return 0;
