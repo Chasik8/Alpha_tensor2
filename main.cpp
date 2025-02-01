@@ -190,11 +190,6 @@ namespace MonteKarlo {
         std::cin>>epoch_kol;
         unsigned long long int epoch_pred =0;
         Derevo *kor;
-        if (conf_iter==-1) {
-            kor = new Derevo(true, nullptr);
-        }else {
-            kor=readmk(epoch_pred);
-        }
         bool size_kor=true;
         for (unsigned long long int epoch = epoch_pred;epoch<epoch_kol+epoch_pred;++epoch,++T) {
             if (epoch%100==0) {
